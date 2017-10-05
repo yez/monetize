@@ -186,18 +186,18 @@ module Monetize
     elsif enforce_currency_delimiters and delimiter == currency.thousands_separator
       [num.gsub(delimiter, ''), 0]
     else
-      extract_major_minor_with_tentative_delimiter(num, delimiter)
+      extract_major_minor_with_tentative_delimiter(num, delimiter, currency)
     end
   end
 
-  def self.extract_major_minor_with_tentative_delimiter(num, delimiter)
+  def self.extract_major_minor_with_tentative_delimiter(num, delimiter, currency)
     if num.scan(delimiter).length > 1
       # Multiple matches; treat as thousands separator
       [num.gsub(delimiter, ''), '00']
     else
       possible_major, possible_minor = split_major_minor(num, delimiter)
 
-      if possible_minor.length != 3 or possible_major.length > 3 or delimiter == '.'
+      if possible_minor.length != 3 or possible_major.length > 3 or currency.decimal_mark == delimiter
         # Doesn't look like thousands separator
         [possible_major, possible_minor]
       else
